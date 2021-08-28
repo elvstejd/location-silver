@@ -72,4 +72,4 @@ function AddListingPage() {
     )
 }
 
-export default AddListingPage
+export default AddListingPage;
