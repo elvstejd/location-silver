@@ -29,7 +29,6 @@ function Map() {
     useEffect(() => {
         if (!map.current) return; // wait that the map exists
         listings.forEach(listing => {
-            console.log(listing.id)
             const marker = new mapboxgl.Marker()
                 .setLngLat([listing.long, listing.lat])
                 .addTo(map.current);
@@ -44,7 +43,6 @@ function Map() {
             markerEl.addEventListener('click', (e) => {
                 setSelectedListing(e.currentTarget.id);
             });
-
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [listings]);

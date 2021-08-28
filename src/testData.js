@@ -28,7 +28,7 @@ const listings = [
         precio: '40,000',
         direccion: 'Av. Avenida avenida #4ven1d4, esquina avenida',
         sector: 'El sector',
-        lat: -18.442615,
+        lat: 18.442615,
         long: -69.943450
     },
     {
