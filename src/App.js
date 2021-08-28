@@ -2,7 +2,7 @@ import './App.css';
 import Map from './components/Map';
 import Listings from './components/Listings';
 import { Box, Heading } from '@chakra-ui/react';
-import { useListingsUpdate } from './ListingsContext';
+import { useListingsUpdate } from './contexts/ListingsContext';
 import { useEffect } from 'react';
 import listingsTestData from './testData';
 

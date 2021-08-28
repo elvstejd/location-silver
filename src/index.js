@@ -4,7 +4,7 @@ import './index.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import App from './App';
 import { ChakraProvider } from "@chakra-ui/react";
-import { ListingsProvider } from './ListingsContext';
+import { ListingsProvider } from './contexts/ListingsContext';
 
 ReactDOM.render(
   <ChakraProvider>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Listing from './Listing';
 import { Box, Flex } from "@chakra-ui/react";
-import { useListings } from '../ListingsContext';
+import { useListings } from '../contexts/ListingsContext';
 
 function Listings() {
     const listings = useListings();

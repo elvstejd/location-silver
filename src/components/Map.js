@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 import styled from 'styled-components';
-import { useListings, useSetSelectedListing } from '../ListingsContext';
+import { useListings, useSetSelectedListing } from '../contexts/ListingsContext';
 const { REACT_APP_MAPBOX_ACCESS_TOKEN } = process.env;
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_ACCESS_TOKEN;

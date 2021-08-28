@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Image, Button } from '@chakra-ui/react';
 import { Container } from '@material-ui/core';
-import { useSelectedListing } from '../ListingsContext';
+import { useSelectedListing } from '../contexts/ListingsContext';
 
 function Listing({ id, direccion, precio, sector }) {
     const [isSelected, setIsSelected] = useState(false);
