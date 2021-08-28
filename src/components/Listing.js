@@ -27,7 +27,7 @@ function Listing({ id, direccion, precio, sector }) {
             minW="15rem"
             maxW="15rem"
             borderWidth="1px"
-            borderRadius="lg"
+            borderRadius="sm"
             overflow="hidden"
             mr="1rem"
             boxShadow={isSelected ? "outline" : "base"}
