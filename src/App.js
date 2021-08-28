@@ -1,10 +1,10 @@
 import './App.css';
-import Map from './components/Map';
-import Listings from './components/Listings';
-import { Box, Heading } from '@chakra-ui/react';
 import { useListingsUpdate } from './contexts/ListingsContext';
 import { useEffect } from 'react';
 import listingsTestData from './testData';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import AddListingPage from './pages/AddListingPage';
 
 function App() {
   const updateListings = useListingsUpdate();
@@ -14,17 +14,12 @@ function App() {
   });
 
   return (
-    <div className="App">
-      <Box
-        maxW="70rem"
-        margin="0 auto"
-      >
-        <Heading as="h1" size="xl">ViviendaRD</Heading>
-        <Map />
-        <Listings />
-      </Box>
-    </div>
-
+    <Router>
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route path="/add" component={AddListingPage} />
+      </Switch>
+    </Router>
   );
 }
 
