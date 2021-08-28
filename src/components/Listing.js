@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Image, Button } from '@chakra-ui/react';
 import { Container } from '@material-ui/core';
+import { useSelectedListing } from '../ListingsContext';
 
-function Listing({ direccion, precio, sector }) {
+function Listing({ id, direccion, precio, sector }) {
     const [isSelected, setIsSelected] = useState(false);
+    const selectedListing = useSelectedListing();
+    const listingRef = useRef(null);
+
+    useEffect(() => {
+        if (!selectedListing) return;
+        if (selectedListing === id) {
+            setIsSelected(true);
+            listingRef.current.scrollIntoView();
+        } else {
+            setIsSelected(false);
+        }
+    }, [selectedListing, id]);
 
     const handleButtonClick = () => {
         setIsSelected(!isSelected);
@@ -11,6 +24,7 @@ function Listing({ direccion, precio, sector }) {
 
     return (
         <Box
+            ref={listingRef}
             minW="15rem"
             maxW="15rem"
             borderWidth="1px"
