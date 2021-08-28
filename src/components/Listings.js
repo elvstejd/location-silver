@@ -7,7 +7,7 @@ function Listings() {
     const listings = useListings();
 
     return (
-        <Box mt="1rem" overflow="auto">
+        <Box mt="1rem" overflow="auto" style={{ scrollBehavior: "smooth" }}>
             <Flex p="0.5rem">
                 {listings.map(({ id, precio, direccion, sector }) => {
                     return <Listing
