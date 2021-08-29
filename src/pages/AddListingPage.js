@@ -25,6 +25,7 @@ function AddListingPage() {
         <Box
             maxW="70rem"
             margin="0 auto"
+            mt="2rem"
         >
             <Heading size="lg">Registra tu propiedad</Heading>
             <Flex
