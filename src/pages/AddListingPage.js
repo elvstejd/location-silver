@@ -30,10 +30,12 @@ function AddListingPage() {
             <Heading size="lg">Registra tu propiedad</Heading>
             <Flex
                 mt="3rem"
+                direction={["column", "column", "row"]}
+                padding={["0 1rem", "0 1rem", "0"]}
             >
                 <Box
                     flex="1"
-                    paddingRight="2rem"
+                    paddingRight={["0", "0", "2rem"]}
                 >
                     <VStack
                         spacing={5}
