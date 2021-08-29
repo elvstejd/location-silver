@@ -29,8 +29,9 @@ function Map() {
     useEffect(() => {
         if (!map.current) return; // wait that the map exists
         listings.forEach(listing => {
+            const location = listing.location
             const marker = new mapboxgl.Marker()
-                .setLngLat([listing.long, listing.lat])
+                .setLngLat([location.long, location.lat])
                 .addTo(map.current);
 
             marker.on('click', (data) => {
