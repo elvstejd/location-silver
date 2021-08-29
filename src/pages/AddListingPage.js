@@ -13,11 +13,17 @@ import {
     Radio,
     Button,
     VStack,
-    Text
+    Text,
+    useToast
 } from '@chakra-ui/react';
 import SelectMap from '../components/SelectMap';
+import { useListingsUpdate } from '../contexts/ListingsContext';
+import axios from 'axios';
 
 function AddListingPage() {
+    const toast = useToast();
+    const updateListings = useListingsUpdate();
+
     const [radioValue, setRadioValue] = useState("1");
     const [address, setAddress] = useState("");
     const [sector, setSector] = useState("");
@@ -30,6 +36,23 @@ function AddListingPage() {
         formData.sector = sector;
         formData.price = price;
         formData.location = location;
+
+        axios.post('http://localhost:3000/listings', formData).then(res => {
+            toast({
+                title: "Propiedad agregada.",
+                description: "Regresa a la pagina principal para verla.",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            });
+            axios.get('http://localhost:3000/listings').then(res => {
+                const listings = res.data;
+                updateListings(listings);
+                console.log(listings)
+            }).catch(err => {
+                console.log(err);
+            });
+        });
 
         console.log(formData);
     }

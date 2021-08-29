@@ -29,7 +29,7 @@ function SelectMap({ setLocation }) {
             marker.current.addTo(map.current);
             console.log(location);
             console.log(e.lngLat.wrap());
-            // setLocation({ long: location.lng, lat: location.lat });
+            setLocation({ long: location.lng, lat: location.lat });
         });
 
         marker.current.on('dragend', e => {
