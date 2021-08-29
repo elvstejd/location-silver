@@ -40,7 +40,7 @@ function Map() {
 
             const markerEl = marker.getElement();
             markerEl.style.cursor = 'pointer';
-            markerEl.id = listing.id;
+            markerEl.id = listing._id;
             markerEl.addEventListener('click', (e) => {
                 setSelectedListing(e.currentTarget.id);
             });
