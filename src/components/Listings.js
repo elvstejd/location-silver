@@ -9,12 +9,12 @@ function Listings() {
     return (
         <Box mt="1rem" overflow="auto" style={{ scrollBehavior: "smooth" }}>
             <Flex p="0.5rem">
-                {listings.map(({ id, precio, direccion, sector }) => {
+                {listings.map(({ _id, price, address, sector }) => {
                     return <Listing
-                        key={id}
-                        id={id}
-                        precio={precio}
-                        direccion={direccion}
+                        key={_id}
+                        id={_id}
+                        price={price}
+                        address={address}
                         sector={sector} />
                 })}
             </Flex>

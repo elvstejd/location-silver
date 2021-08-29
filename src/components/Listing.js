@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Image, Button } from '@chakra-ui/react';
 import { useSelectedListing } from '../contexts/ListingsContext';
 
-function Listing({ id, direccion, precio, sector }) {
+function Listing({ id, address, price, sector }) {
     const [isSelected, setIsSelected] = useState(false);
     const selectedListing = useSelectedListing();
     const listingRef = useRef(null);
@@ -37,8 +37,8 @@ function Listing({ id, direccion, precio, sector }) {
             </Box>
             <Box m="0.5rem">
                 <Box>
-                    <Text fontWeight="semibold" isTruncated>{direccion}</Text>
-                    <Text fontWeight="bold" fontSize="lg">RD${precio}</Text>
+                    <Text fontWeight="semibold" isTruncated>{address}</Text>
+                    <Text fontWeight="bold" fontSize="lg">RD${price}</Text>
                     <Text color="gray.800">{sector}</Text>
                 </Box>
                 <Box d="flex" justifyContent="center">

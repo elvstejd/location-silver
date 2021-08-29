@@ -6,12 +6,19 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AddListingPage from './pages/AddListingPage';
 import NavBar from './components/NavBar';
+import axios from 'axios';
 
 function App() {
   const updateListings = useListingsUpdate();
 
   useEffect(() => {
-    updateListings(listingsTestData);
+    axios.get('http://localhost:3000/listings').then(res => {
+      const listings = res.data;
+      updateListings(listings);
+      console.log(listings)
+    }).catch(err => {
+      console.log(err);
+    });
   });
 
   return (

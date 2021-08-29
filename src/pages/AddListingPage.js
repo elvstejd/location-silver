@@ -18,8 +18,21 @@ import {
 import SelectMap from '../components/SelectMap';
 
 function AddListingPage() {
-
     const [radioValue, setRadioValue] = useState("1");
+    const [address, setAddress] = useState("");
+    const [sector, setSector] = useState("");
+    const [price, setPrice] = useState("");
+    const [location, setLocation] = useState({});
+
+    function handleSubmitClick() {
+        const formData = {};
+        formData.address = address;
+        formData.sector = sector;
+        formData.price = price;
+        formData.location = location;
+
+        console.log(formData);
+    }
 
     return (
         <Box
@@ -42,16 +55,19 @@ function AddListingPage() {
                     >
                         <FormControl id="address">
                             <FormLabel>Dirección</FormLabel>
-                            <Input placeholder="C/ calle, esquina" />
+                            <Input
+                                onChange={e => setAddress(e.target.value)}
+                                placeholder="C/ calle, esquina"
+                            />
                         </FormControl>
                         <FormControl id="sector">
                             <FormLabel>Sector</FormLabel>
-                            <Input />
+                            <Input onChange={e => setSector(e.target.value)} />
                         </FormControl>
                         <FormControl id="price">
                             <FormLabel>Precio</FormLabel>
                             <NumberInput>
-                                <NumberInputField />
+                                <NumberInputField onChange={e => setPrice(e.target.value)} />
                             </NumberInput>
                         </FormControl>
                         <RadioGroup
@@ -63,11 +79,11 @@ function AddListingPage() {
                                 <Radio value="2">Venta</Radio>
                             </Stack>
                         </RadioGroup>
-                        <Button colorScheme="blue">Guardar</Button>
+                        <Button colorScheme="blue" onClick={handleSubmitClick}>Guardar</Button>
                     </VStack>
                 </Box>
                 <Box flex="1">
-                    <SelectMap />
+                    <SelectMap setLocation={setLocation} />
                     <Text color="gray.500">Selecciona la ubicación en el mapa</Text>
                 </Box>
             </Flex>
