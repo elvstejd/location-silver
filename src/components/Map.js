@@ -1,14 +1,10 @@
 import React, { useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
-import styled from 'styled-components';
 import { useListings, useSetSelectedListing } from '../contexts/ListingsContext';
 const { REACT_APP_MAPBOX_ACCESS_TOKEN } = process.env;
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const MapContainer = styled.div`
-    height: 400px;
-`;
 
 function Map() {
     const mapContainer = useRef(null);
@@ -50,7 +46,7 @@ function Map() {
 
     return (
         <div>
-            <MapContainer ref={mapContainer} className="map-container" />
+            <div style={{ height: "400px" }} ref={mapContainer} className="map-container" />
         </div>
     )
 }
