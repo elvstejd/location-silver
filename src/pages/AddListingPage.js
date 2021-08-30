@@ -27,8 +27,8 @@ function AddListingPage() {
     const updateListings = useListingsUpdate();
 
     const [radioValue, setRadioValue] = useState("1");
-    const [address, setAddress] = useState("");
-    const [sector, setSector] = useState("");
+    const [address] = useState("");
+    const [sector] = useState("");
     const [price, setPrice] = useState("");
     const [location, setLocation] = useState({});
 
