@@ -11,7 +11,7 @@ function App() {
   const updateListings = useListingsUpdate();
 
   useEffect(() => {
-    axios.get('http://localhost:3000/listings').then(res => {
+    axios.get('https://location-silver-api.herokuapp.com/listings').then(res => {
       const listings = res.data;
       updateListings(listings);
       console.log(listings)
