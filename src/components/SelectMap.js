@@ -4,7 +4,7 @@ const { REACT_APP_MAPBOX_ACCESS_TOKEN } = process.env;
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-function SelectMap({ setLocation }) {
+function SelectMap({ setFieldValue }) {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const marker = useRef(null);
@@ -29,14 +29,14 @@ function SelectMap({ setLocation }) {
             marker.current.addTo(map.current);
             console.log(location);
             console.log(e.lngLat.wrap());
-            setLocation({ long: location.lng, lat: location.lat });
+            setFieldValue('location', { long: location.lng, lat: location.lat });
         });
 
         marker.current.on('dragend', e => {
             const location = e.target._lngLat;
             console.log(location);
-            console.log('dragend, location set')
-            setLocation({ long: location.lng, lat: location.lat });
+            console.log('dragend, location set');
+            setFieldValue('location', { long: location.lng, lat: location.lat });
         });
     });
 

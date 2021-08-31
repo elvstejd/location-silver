@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
     Box,
     Heading,
@@ -7,57 +6,31 @@ import {
     FormLabel,
     Flex,
     Stack,
-    NumberInput,
-    NumberInputField,
     RadioGroup,
     Radio,
     Button,
     VStack,
-    Text,
+    FormHelperText,
     useToast,
     FormErrorMessage
 } from '@chakra-ui/react';
 import SelectMap from '../components/SelectMap';
 import { useListingsUpdate } from '../contexts/ListingsContext';
 import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
 import axios from 'axios';
 
 function AddListingPage() {
     const toast = useToast();
     const updateListings = useListingsUpdate();
 
-    const [radioValue, setRadioValue] = useState("1");
-    const [address] = useState("");
-    const [sector] = useState("");
-    const [price, setPrice] = useState("");
-    const [location, setLocation] = useState({});
-
-    function handleSubmitClick() {
-        const formData = {};
-        formData.address = address;
-        formData.sector = sector;
-        formData.price = price;
-        formData.location = location;
-
-        axios.post('https://location-silver-api.herokuapp.com/listings', formData).then(res => {
-            toast({
-                title: "Propiedad agregada.",
-                description: "Regresa a la pagina principal para verla.",
-                status: "success",
-                duration: 9000,
-                isClosable: true,
-            });
-            axios.get('https://location-silver-api.herokuapp.com/listings').then(res => {
-                const listings = res.data;
-                updateListings(listings);
-                console.log(listings)
-            }).catch(err => {
-                console.log(err);
-            });
-        });
-
-        console.log(formData);
-    }
+    const addListingSchema = Yup.object().shape({
+        address: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
+        sector: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
+        price: Yup.number().typeError('Debe ser un número').required('Campo requerido'),
+        "price-type": Yup.string().required(),
+        location: Yup.object().required('No olvides elegir una ubicación en el mapa')
+    });
 
     return (
         <Box
@@ -66,65 +39,106 @@ function AddListingPage() {
             mt="2rem"
         >
             <Heading size="lg">Registra tu propiedad</Heading>
-            <Flex
-                mt="3rem"
-                direction={["column", "column", "row"]}
-                padding={["0 1rem", "0 1rem", "0"]}
-            >
-                <Box
-                    flex="1"
-                    paddingRight={["0", "0", "2rem"]}
-                >
-                    <Formik
-                        initialValues={{ address: "", sector: "", price: "" }}
-                    >{(props) => (
-                        <Form>
+            <Formik
+                initialValues={{
+                    address: "",
+                    sector: "",
+                    price: "",
+                    "price-type": "rent",
+                    location: ""
+                }}
+                onSubmit={async (values, actions) => {
+                    const res = await axios.post('https://location-silver-api.herokuapp.com/listings', values);
+                    if (res.status === 200) {
+                        toast({
+                            title: "Propiedad agregada",
+                            description: "Regresa al mapa para verla.",
+                            status: "success",
+                            duration: 9000,
+                            isClosable: true,
+                        })
+                    }
+                    await axios.get('https://location-silver-api.herokuapp.com/listings').then(res => {
+                        const listings = res.data;
+                        updateListings(listings);
+                        console.log(listings)
+                    }).catch(err => {
+                        console.log(err);
+                    });
+                    actions.resetForm();
+                }}
+                validationSchema={addListingSchema}
+            >{({ isSubmitting }) => (
+                <Form>
+                    <Flex
+                        mt="3rem"
+                        direction={["column", "column", "row"]}
+                        padding={["0 1rem", "0 1rem", "0"]}
+                    >
+                        <Box
+                            flex="1"
+                            paddingRight={["0", "0", "2rem"]}
+                        >
                             <VStack spacing={5}>
                                 <Field name="address">
                                     {({ field, form }) => (
-                                        <FormControl id="address">
+                                        <FormControl id="address" isInvalid={form.errors.address && form.touched.address} >
                                             <FormLabel>Dirección</FormLabel>
                                             <Input {...field} placeholder="Dirección" />
                                             <FormErrorMessage>{form.errors.address}</FormErrorMessage>
                                         </FormControl>
                                     )}
                                 </Field>
-                                <Field name="sector">
+                                <Field name="sector" >
                                     {({ field, form }) => (
-                                        <FormControl id="sector">
+                                        <FormControl id="sector" isInvalid={form.errors.sector && form.touched.sector}>
                                             <FormLabel>Sector</FormLabel>
                                             <Input {...field} placeholder="Sector" />
-                                            <FormErrorMessage>{form.errors.address}</FormErrorMessage>
+                                            <FormErrorMessage>{form.errors.sector}</FormErrorMessage>
                                         </FormControl>
                                     )}
                                 </Field>
-
-                                <FormControl id="price">
-                                    <FormLabel>Precio</FormLabel>
-                                    <NumberInput>
-                                        <NumberInputField onChange={e => setPrice(e.target.value)} />
-                                    </NumberInput>
-                                </FormControl>
-                                <RadioGroup
-                                    value={radioValue}
-                                    onChange={setRadioValue}
-                                >
-                                    <Stack direction="row">
-                                        <Radio value="1">Alquiler</Radio>
-                                        <Radio value="2">Venta</Radio>
-                                    </Stack>
-                                </RadioGroup>
-                                <Button colorScheme="blue" onClick={handleSubmitClick}>Guardar</Button>
+                                <Field name="price">
+                                    {({ field, form }) => (
+                                        <FormControl id="price" isInvalid={form.errors.price && form.touched.price} >
+                                            <FormLabel>Precio</FormLabel>
+                                            <Input {...field} />
+                                            <FormErrorMessage>{form.errors.price}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Field name="price-type" >
+                                    {({ field, form }) => (
+                                        <FormControl>
+                                            <FormLabel>Tipo</FormLabel>
+                                            <RadioGroup {...field} id="price-type">
+                                                <Stack direction="row" spacing={9}>
+                                                    <Radio {...field} value="rent" >Alquiler</Radio>
+                                                    <Radio {...field} value="buy" >Venta</Radio>
+                                                </Stack>
+                                            </RadioGroup>
+                                            <FormErrorMessage>{form.errors["price-type"]}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Button type="submit" colorScheme="blue" disabled={isSubmitting} >Guardar</Button>
                             </VStack>
-                        </Form>
-                    )}
-                    </Formik>
-                </Box>
-                <Box flex="1">
-                    <SelectMap setLocation={setLocation} />
-                    <Text color="gray.500">Selecciona la ubicación en el mapa</Text>
-                </Box>
-            </Flex>
+                        </Box>
+                        <Box flex="1">
+                            <Field name="location" >
+                                {({ field, form }) => (
+                                    <FormControl isInvalid={form.errors.location && form.touched["price-type"]}>
+                                        <SelectMap {...field} {...form} />
+                                        <FormHelperText>Selecciona la ubicación en el mapa</FormHelperText>
+                                        <FormErrorMessage>{form.errors.location}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                        </Box>
+                    </Flex>
+                </Form>
+            )}
+            </Formik>
         </Box >
     )
 }
