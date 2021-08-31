@@ -14,7 +14,6 @@ function App() {
     axios.get('https://location-silver-api.herokuapp.com/listings').then(res => {
       const listings = res.data;
       updateListings(listings);
-      console.log(listings)
     }).catch(err => {
       console.log(err);
     });
