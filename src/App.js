@@ -7,15 +7,15 @@ import AddListingPage from './pages/AddListingPage';
 import SignUpPage from './pages/SignUpPage';
 import LogInPage from './pages/LogInPage';
 import NavBar from './components/NavBar';
-import axios from 'axios';
 import DashboardPage from './pages/DashboardPage';
 import PrivateRoute from './components/PrivateRoute';
+import { getListings } from './utils/fetchServices';
 
 function App() {
   const updateListings = useListingsUpdate();
 
   useEffect(() => {
-    axios.get('https://location-silver-api.herokuapp.com/listings').then(res => {
+    getListings().then(res => {
       const listings = res.data;
       updateListings(listings);
     }).catch(err => {
