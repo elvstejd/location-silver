@@ -9,3 +9,13 @@ export function postListing(values) {
 export function getListings() {
     return axios.get('/listings');
 }
+
+
+/* USERS */
+export function postUser(uid, email, name) {
+    return axios.post('/users', { uid, email, name });
+}
+
+export function getUser(uid) {
+    return axios.get('/users/' + uid);
+}
