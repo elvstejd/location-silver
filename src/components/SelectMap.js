@@ -4,7 +4,7 @@ const { REACT_APP_MAPBOX_ACCESS_TOKEN } = process.env;
 
 mapboxgl.accessToken = REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-function SelectMap({ setFieldValue }) {
+function SelectMap({ setFieldValue, setFieldTouched }) {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const marker = useRef(null);
@@ -30,6 +30,7 @@ function SelectMap({ setFieldValue }) {
             console.log(location);
             console.log(e.lngLat.wrap());
             setFieldValue('location', { long: location.lng, lat: location.lat });
+            setFieldTouched('location', true);
         });
 
         marker.current.on('dragend', e => {
