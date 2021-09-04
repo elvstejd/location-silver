@@ -22,7 +22,7 @@ function NavBar() {
         >
             <NavLink to="/" exact={true}>Inicio</NavLink>
             {currentUser ? (
-                ((location.pathname !== "/dashboard") && <Button colorScheme="blue"><RouterLink to="/Dashboard">Dashboard</RouterLink></Button>)
+                ((location.pathname !== "/dashboard") && <Button colorScheme="blue"><RouterLink to="/dashboard">Dashboard</RouterLink></Button>)
             ) : (
                 ((location.pathname !== "/login") && <Button colorScheme="blue"><RouterLink to="/login">Iniciar sesión</RouterLink></Button>)
             )}

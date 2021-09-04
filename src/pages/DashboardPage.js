@@ -3,6 +3,7 @@ import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useUser } from '../hooks/useUser';
 import React from 'react';
+import LoadingScreen from '../components/LoadingScreen';
 
 function DashboardPage() {
     const history = useHistory();
@@ -15,6 +16,14 @@ function DashboardPage() {
         } catch (err) {
             console.log('log out error', err);
         }
+    }
+
+    if (!name) {
+        return (
+            <LoadingScreen>
+
+            </LoadingScreen>
+        );
     }
 
     return (
