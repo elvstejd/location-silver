@@ -15,22 +15,46 @@ import {
     FormErrorMessage
 } from '@chakra-ui/react';
 import SelectMap from '../components/SelectMap';
+import FileInput from '../components/FileInput';
 import { useListingsUpdate } from '../contexts/ListingsContext';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
+import { postListing, getListings } from '../utils/fetchServices';
 
 function AddListingPage() {
     const toast = useToast();
     const updateListings = useListingsUpdate();
 
     const addListingSchema = Yup.object().shape({
+        image: Yup.mixed()
+            .required("Es necesario proveer una imagen. "),
         address: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
         sector: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
         price: Yup.number().typeError('Debe ser un número').required('Campo requerido'),
         "price-type": Yup.string().required(),
         location: Yup.object().required('No olvides elegir una ubicación en el mapa')
     });
+
+    async function handleFormSubmit(values, actions) {
+        const res = await postListing(values);
+        if (res.status === 200) {
+            toast({
+                title: "Propiedad agregada",
+                description: "Regresa al mapa para verla.",
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+            })
+        }
+        await getListings().then(res => {
+            const listings = res.data;
+            updateListings(listings);
+            console.log(listings)
+        }).catch(err => {
+            console.log(err);
+        });
+        actions.resetForm();
+    }
 
     return (
         <Box
@@ -41,32 +65,14 @@ function AddListingPage() {
             <Heading size="lg">Registra tu propiedad</Heading>
             <Formik
                 initialValues={{
+                    image: "",
                     address: "",
                     sector: "",
                     price: "",
                     "price-type": "rent",
                     location: ""
                 }}
-                onSubmit={async (values, actions) => {
-                    const res = await axios.post('https://location-silver-api.herokuapp.com/listings', values);
-                    if (res.status === 200) {
-                        toast({
-                            title: "Propiedad agregada",
-                            description: "Regresa al mapa para verla.",
-                            status: "success",
-                            duration: 9000,
-                            isClosable: true,
-                        })
-                    }
-                    await axios.get('https://location-silver-api.herokuapp.com/listings').then(res => {
-                        const listings = res.data;
-                        updateListings(listings);
-                        console.log(listings)
-                    }).catch(err => {
-                        console.log(err);
-                    });
-                    actions.resetForm();
-                }}
+                onSubmit={handleFormSubmit}
                 validationSchema={addListingSchema}
             >{({ isSubmitting }) => (
                 <Form>
@@ -80,6 +86,15 @@ function AddListingPage() {
                             paddingRight={["0", "0", "2rem"]}
                         >
                             <VStack spacing={5}>
+                                <Field name="image">
+                                    {({ form }) => (
+                                        <FormControl id="image" isInvalid={form.errors.image && form.touched.image}>
+                                            <FormLabel>Imagen de la propiedad</FormLabel>
+                                            <FileInput {...form} />
+                                            <FormErrorMessage>{form.errors.image}</FormErrorMessage>
+                                        </FormControl>
+                                    )}
+                                </Field>
                                 <Field name="address">
                                     {({ field, form }) => (
                                         <FormControl id="address" isInvalid={form.errors.address && form.touched.address} >
@@ -126,9 +141,9 @@ function AddListingPage() {
                         </Box>
                         <Box flex="1">
                             <Field name="location" >
-                                {({ field, form }) => (
-                                    <FormControl isInvalid={form.errors.location && form.touched["price-type"]}>
-                                        <SelectMap {...field} {...form} />
+                                {({ form }) => (
+                                    <FormControl isInvalid={form.errors.location && form.touched.location}>
+                                        <SelectMap {...form} />
                                         <FormHelperText>Selecciona la ubicación en el mapa</FormHelperText>
                                         <FormErrorMessage>{form.errors.location}</FormErrorMessage>
                                     </FormControl>
