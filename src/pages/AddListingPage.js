@@ -26,7 +26,7 @@ function AddListingPage() {
     const updateListings = useListingsUpdate();
 
     const addListingSchema = Yup.object().shape({
-        imageUrl: Yup.string().required("Imagen requerida"),
+        imageUrl: Yup.string().required("Por favor suministre una imagen"),
         address: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
         sector: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
         price: Yup.number().typeError('Debe ser un número').required('Campo requerido'),

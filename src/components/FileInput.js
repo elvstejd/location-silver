@@ -2,9 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { Box, Center, Text } from '@chakra-ui/react';
 import { storage } from '../firebase';
 
-function FileInput({ setFieldValue, setStatus, status }) {
+const SUPPORTED_IMAGE_FORMATS = ['image/png', 'image/jpeg']
+
+function FileInput({ setFieldValue, setFieldTouched, setStatus, status }) {
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const [selectedFile, setSelectedFile] = useState();
+    const [typeError, setTypeError] = useState('');
     const [error, setError] = useState();
     const [progress, setProgress] = useState(0);
     const [url, setUrl] = useState();
@@ -63,7 +66,18 @@ function FileInput({ setFieldValue, setStatus, status }) {
         setIsDraggingOver(false);
         const dataTransfer = e.dataTransfer;
         const file = dataTransfer.files[0];
-        setSelectedFile(file);
+
+        // validate file is an image 
+        if (SUPPORTED_IMAGE_FORMATS.includes(file.type)) {
+            setTypeError('');
+            setSelectedFile(file);
+        } else {
+            if (selectedFile) {
+                setTypeError('');
+            } else {
+                setTypeError('Debe ser de tipo imagen');
+            }
+        }
     }
 
     function handleHiddenInputChange(e) {
@@ -102,7 +116,7 @@ function FileInput({ setFieldValue, setStatus, status }) {
             <Box bgColor={getProgressColor} h="100%" borderRadius="md" w={progress + "%"} />
             <Center h="100%" bgColor="transparent" position="relative" top="-62px">
                 <Text>
-                    {selectedFile ? selectedFile.name : "Arrastra tu imagen aqui"}
+                    {selectedFile ? selectedFile.name : typeError ? typeError : "Arrastra tu imagen aqui"}
                 </Text>
             </Center>
             <input
@@ -110,6 +124,7 @@ function FileInput({ setFieldValue, setStatus, status }) {
                 type="file"
                 ref={hiddenFileInput}
                 onChange={handleHiddenInputChange}
+                accept="image/*"
             />
         </Box>
     )
