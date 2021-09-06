@@ -26,8 +26,7 @@ function AddListingPage() {
     const updateListings = useListingsUpdate();
 
     const addListingSchema = Yup.object().shape({
-        image: Yup.mixed()
-            .required("Es necesario proveer una imagen. "),
+        imageUrl: Yup.string().required("Imagen requerida"),
         address: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
         sector: Yup.string().min(4, "Muy corto").max(60, "Muy largo").required('Campo requerido'),
         price: Yup.number().typeError('Debe ser un número').required('Campo requerido'),
@@ -37,14 +36,16 @@ function AddListingPage() {
 
     async function handleFormSubmit(values, actions) {
         const res = await postListing(values);
-        if (res.status === 200) {
+        if (res.status === 201) {
+            actions.setStatus('success_submit');
+            actions.resetForm();
             toast({
                 title: "Propiedad agregada",
                 description: "Regresa al mapa para verla.",
                 status: "success",
                 duration: 9000,
                 isClosable: true,
-            })
+            });
         }
         await getListings().then(res => {
             const listings = res.data;
@@ -53,7 +54,6 @@ function AddListingPage() {
         }).catch(err => {
             console.log(err);
         });
-        actions.resetForm();
     }
 
     return (
@@ -65,7 +65,7 @@ function AddListingPage() {
             <Heading size="lg">Registra tu propiedad</Heading>
             <Formik
                 initialValues={{
-                    image: "",
+                    imageUrl: "",
                     address: "",
                     sector: "",
                     price: "",
@@ -74,7 +74,7 @@ function AddListingPage() {
                 }}
                 onSubmit={handleFormSubmit}
                 validationSchema={addListingSchema}
-            >{({ isSubmitting }) => (
+            >{({ isSubmitting, status }) => (
                 <Form>
                     <Flex
                         mt="3rem"
@@ -86,12 +86,12 @@ function AddListingPage() {
                             paddingRight={["0", "0", "2rem"]}
                         >
                             <VStack spacing={5}>
-                                <Field name="image">
+                                <Field name="imageUrl">
                                     {({ form }) => (
-                                        <FormControl id="image" isInvalid={form.errors.image && form.touched.image}>
+                                        <FormControl id="imageUrl" isInvalid={form.errors.imageUrl && form.touched.imageUrl}>
                                             <FormLabel>Imagen de la propiedad</FormLabel>
-                                            <FileInput {...form} />
-                                            <FormErrorMessage>{form.errors.image}</FormErrorMessage>
+                                            <FileInput status={status} {...form} />
+                                            <FormErrorMessage>{form.errors.imageUrl}</FormErrorMessage>
                                         </FormControl>
                                     )}
                                 </Field>

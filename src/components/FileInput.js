@@ -1,13 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 import { Box, Center, Text } from '@chakra-ui/react';
+import { storage } from '../firebase';
 
-function FileInput({ setFieldValue, setFieldTouched }) {
+function FileInput({ setFieldValue, setStatus, status }) {
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const [selectedFile, setSelectedFile] = useState();
+    const [error, setError] = useState();
+    const [progress, setProgress] = useState(0);
+    const [url, setUrl] = useState();
+
     const hiddenFileInput = useRef();
 
     useEffect(() => {
-        // prevent the browser from loading a file when one is dropped
+        // prevent the browser from loading a file when one is dropped on the window
         const dropEvents = ['dragover', 'drop'];
         dropEvents.forEach(dropEvent => {
             window.addEventListener(dropEvent, (e) => {
@@ -17,10 +22,34 @@ function FileInput({ setFieldValue, setFieldTouched }) {
     }, []);
 
     useEffect(() => {
+        // whenever status changes to "success_submit" clear the selectedFile and reset status
+        if (status === 'success_submit') {
+            setSelectedFile(null);
+            setStatus("");
+        }
+    }, [status, setStatus]);
+
+    useEffect(() => {
+        // upload image whenever selectedFile changes 
         if (!selectedFile) return;
-        setFieldTouched(true);
-        setFieldValue('image', selectedFile);
-    }, [selectedFile, setFieldValue, setFieldTouched]);
+        setFieldValue('imageUrl', "");
+        const storageRef = storage.ref(selectedFile.name);
+        storageRef.put(selectedFile).on('state_changed', snap => {
+            let percentage = (snap.bytesTransferred / snap.totalBytes) * 100;
+            setProgress(percentage);
+        }, err => {
+            setError(err);
+        }, async () => {
+            const url = await storageRef.getDownloadURL();
+            setUrl(url);
+        });
+    }, [selectedFile, setFieldValue]);
+
+    useEffect(() => {
+        // set field value whenever url changes
+        if (!url) return;
+        setFieldValue('imageUrl', url);
+    }, [url, setFieldValue]);
 
     function handleDragIn() {
         setIsDraggingOver(true);
@@ -45,7 +74,16 @@ function FileInput({ setFieldValue, setFieldTouched }) {
     function handleClick() {
         if (!hiddenFileInput.current) return;
         hiddenFileInput.current.click();
-        setFieldValue("selectedFile")
+    }
+
+    function getProgressColor() {
+        if (error) return "red.300";
+        if (!selectedFile) return "none";
+        if (progress === 100) {
+            return "green.300";
+        } else {
+            return "green.100";
+        }
     }
 
     return (
@@ -61,7 +99,8 @@ function FileInput({ setFieldValue, setFieldTouched }) {
             onClick={handleClick}
             cursor="pointer"
         >
-            <Center h="100%">
+            <Box bgColor={getProgressColor} h="100%" borderRadius="md" w={progress + "%"} />
+            <Center h="100%" bgColor="transparent" position="relative" top="-62px">
                 <Text>
                     {selectedFile ? selectedFile.name : "Arrastra tu imagen aqui"}
                 </Text>
