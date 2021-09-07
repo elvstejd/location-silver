@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Box, Center, Text } from '@chakra-ui/react';
+import { Box, Center, Text, Spinner } from '@chakra-ui/react';
 import { storage } from '../firebase';
+import { asyncCompressImageFile } from '../utils/asyncCompressImageFile';
 
 const SUPPORTED_IMAGE_FORMATS = ['image/png', 'image/jpeg']
 
@@ -35,17 +36,22 @@ function FileInput({ setFieldValue, setFieldTouched, setStatus, status }) {
     useEffect(() => {
         // upload image whenever selectedFile changes 
         if (!selectedFile) return;
-        setFieldValue('imageUrl', "");
-        const storageRef = storage.ref(selectedFile.name);
-        storageRef.put(selectedFile).on('state_changed', snap => {
-            let percentage = (snap.bytesTransferred / snap.totalBytes) * 100;
-            setProgress(percentage);
-        }, err => {
-            setError(err);
-        }, async () => {
-            const url = await storageRef.getDownloadURL();
-            setUrl(url);
-        });
+        asyncCompressImageFile(selectedFile).then(compressedImage => {
+            setFieldValue('imageUrl', "");
+            const storageRef = storage.ref(compressedImage.name);
+            storageRef.put(compressedImage).on('state_changed', snap => {
+                let percentage = (snap.bytesTransferred / snap.totalBytes) * 100;
+                setProgress(percentage);
+            }, err => {
+                setError(err);
+            }, async () => {
+                const url = await storageRef.getDownloadURL();
+                setUrl(url);
+            });
+        }).catch(err => {
+            console.log(err);
+        })
+
     }, [selectedFile, setFieldValue]);
 
     useEffect(() => {
@@ -113,8 +119,9 @@ function FileInput({ setFieldValue, setFieldTouched, setStatus, status }) {
             onClick={handleClick}
             cursor="pointer"
         >
-            <Box bgColor={getProgressColor} h="100%" borderRadius="md" w={progress + "%"} />
-            <Center h="100%" bgColor="transparent" position="relative" top="-62px">
+            {/* <Box bgColor={getProgressColor} h="100%" borderRadius="md" w={progress + "%"} /> */}
+            <Center h="100%" alignItems="center" display="flex" bgColor={(progress === 100 && selectedFile) && "green.100"}>
+                {(progress !== 100 && selectedFile) && <Spinner mr="0.5rem" />}
                 <Text>
                     {selectedFile ? selectedFile.name : typeError ? typeError : "Arrastra tu imagen aqui"}
                 </Text>
