@@ -9,7 +9,7 @@ function FileInput({ setFieldValue, setFieldTouched, setStatus, status }) {
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const [selectedFile, setSelectedFile] = useState();
     const [typeError, setTypeError] = useState('');
-    const [error, setError] = useState();
+    const [, setError] = useState();
     const [progress, setProgress] = useState(0);
     const [url, setUrl] = useState();
 
