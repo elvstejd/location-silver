@@ -9,13 +9,15 @@ function Listings() {
     return (
         <Box mt="1rem" overflow="auto" style={{ scrollBehavior: "smooth" }}>
             <Flex p="0.5rem">
-                {listings.map(({ _id, price, address, sector }) => {
+                {listings.map(({ _id, price, address, sector, imageUrl }) => {
                     return <Listing
                         key={_id}
                         id={_id}
                         price={price}
                         address={address}
-                        sector={sector} />
+                        sector={sector}
+                        imageUrl={imageUrl}
+                    />
                 })}
             </Flex>
         </Box>

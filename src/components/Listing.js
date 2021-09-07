@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Box, Text, Image, Button } from '@chakra-ui/react';
 import { useSelectedListing } from '../contexts/ListingsContext';
 
-function Listing({ id, address, price, sector }) {
+function Listing({ id, address, price, sector, imageUrl }) {
     const [isSelected, setIsSelected] = useState(false);
     const selectedListing = useSelectedListing();
     const listingRef = useRef(null);
@@ -33,7 +33,7 @@ function Listing({ id, address, price, sector }) {
             boxShadow={isSelected ? "outline" : "base"}
         >
             <Box>
-                <Image objectFit="cover" src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60" alt="something"></Image>
+                <Image objectFit="cover" src={imageUrl || "https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8aG91c2V8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=60"} alt="something"></Image>
             </Box>
             <Box m="0.5rem">
                 <Box>

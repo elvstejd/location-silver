@@ -25,14 +25,12 @@ function Map() {
     useEffect(() => {
         if (!map.current) return; // wait that the map exists
         listings.forEach(listing => {
-            const location = listing.location
+            const location = listing.location;
+            if (!location.long) return;
             const marker = new mapboxgl.Marker()
                 .setLngLat([location.long, location.lat])
                 .addTo(map.current);
 
-            marker.on('click', (data) => {
-                console.log(data);
-            });
 
             const markerEl = marker.getElement();
             markerEl.style.cursor = 'pointer';
