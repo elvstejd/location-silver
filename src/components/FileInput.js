@@ -109,7 +109,6 @@ function FileInput({ setFieldValue, setFieldTouched, setStatus, status }) {
             onClick={handleClick}
             cursor="pointer"
         >
-            {/* <Box bgColor={getProgressColor} h="100%" borderRadius="md" w={progress + "%"} /> */}
             <Center h="100%" alignItems="center" display="flex" bgColor={(progress === 100 && selectedFile) && "green.100"}>
                 {(progress !== 100 && selectedFile) && <Spinner mr="0.5rem" />}
                 <Text>
