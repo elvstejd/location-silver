@@ -96,16 +96,6 @@ function FileInput({ setFieldValue, setFieldTouched, setStatus, status }) {
         hiddenFileInput.current.click();
     }
 
-    function getProgressColor() {
-        if (error) return "red.300";
-        if (!selectedFile) return "none";
-        if (progress === 100) {
-            return "green.300";
-        } else {
-            return "green.100";
-        }
-    }
-
     return (
         <Box
             h="4rem"
